@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050a0f">
+<title>Mahmut AI</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c-bg:#050a0f;
+  --c-panel:#0a1520;
+  --c-border:#00d4ff22;
+  --c-accent:#00d4ff;
+  --c-accent2:#00ff88;
+  --c-text:#c8e6f0;
+  --c-muted:#4a7a8a;
+}
+body{background:var(--c-bg);color:var(--c-text);min-height:100vh;font-family:'Rajdhani',sans-serif}
+.wrapper{max-width:680px;margin:0 auto;padding:1.5rem 1rem}
+.header{text-align:center;margin-bottom:2rem}
+.logo{font-family:'Orbitron',monospace;font-size:2.2rem;font-weight:900;color:var(--c-accent);letter-spacing:4px}
+.logo span{color:var(--c-accent2)}
+.subtitle{font-size:0.85rem;color:var(--c-muted);letter-spacing:3px;margin-top:4px;font-family:'Rajdhani',sans-serif}
+.status-bar{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:1.5rem}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--c-accent2);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+.status-text{font-size:0.8rem;letter-spacing:2px;color:var(--c-accent2);font-family:'Rajdhani',sans-serif}
+.chat-box{background:var(--c-panel);border:1px solid var(--c-border);border-radius:12px;height:380px;overflow-y:auto;padding:1rem;margin-bottom:1rem;display:flex;flex-direction:column;gap:10px}
+.chat-box::-webkit-scrollbar{width:4px}
+.chat-box::-webkit-scrollbar-thumb{background:var(--c-muted);border-radius:2px}
+.msg{padding:8px 12px;border-radius:8px;max-width:88%;font-size:0.95rem;line-height:1.6;font-family:'Rajdhani',sans-serif;word-break:break-word}
+.msg.mahmut{background:#001a2a;border:1px solid #00d4ff33;align-self:flex-start;color:var(--c-accent)}
+.msg.user{background:#001a0f;border:1px solid #00ff8833;align-self:flex-end;color:var(--c-accent2)}
+.msg.system{background:#0a0a15;border:1px solid #ffffff11;align-self:center;color:var(--c-muted);font-size:0.8rem;text-align:center}
+.msg.thinking{background:#0a0a15;border:1px solid #00d4ff11;align-self:flex-start;color:var(--c-muted);font-style:italic}
+.label{font-size:0.65rem;letter-spacing:2px;margin-bottom:3px;opacity:0.6;font-family:'Rajdhani',sans-serif}
+.ai-badge{display:inline-block;font-size:0.6rem;background:#00d4ff22;border:1px solid #00d4ff44;color:var(--c-accent);padding:1px 6px;border-radius:4px;margin-left:6px;letter-spacing:1px;vertical-align:middle}
+.quick-btns{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:1rem}
+.qbtn{background:var(--c-panel);border:1px solid var(--c-border);border-radius:8px;padding:9px 12px;color:var(--c-text);font-family:'Rajdhani',sans-serif;font-size:0.85rem;cursor:pointer;letter-spacing:1px;transition:all 0.2s;text-align:left}
+.qbtn:hover{border-color:var(--c-accent);color:var(--c-accent);background:#001520}
+.input-row{display:flex;gap:8px;align-items:center}
+.text-input{flex:1;background:var(--c-panel);border:1px solid var(--c-border);border-radius:8px;padding:10px 14px;color:var(--c-text);font-family:'Rajdhani',sans-serif;font-size:0.95rem;outline:none;transition:border 0.2s}
+.text-input::placeholder{color:var(--c-muted)}
+.text-input:focus{border-color:var(--c-accent)}
+.btn-send{background:var(--c-accent);border:none;border-radius:8px;width:42px;height:42px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;color:#000}
+.btn-send:hover{background:#00aacc;transform:scale(1.05)}
+.btn-mic{background:transparent;border:1px solid var(--c-border);border-radius:8px;width:42px;height:42px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;color:var(--c-text)}
+.btn-mic:hover{border-color:var(--c-accent2);color:var(--c-accent2)}
+.btn-mic.listening{border-color:#ff4466;background:#ff446622;animation:micpulse 1s infinite}
+@keyframes micpulse{0%,100%{box-shadow:0 0 0 0 #ff446644}50%{box-shadow:0 0 0 8px transparent}}
+.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:1rem}
+.info-card{background:var(--c-panel);border:1px solid var(--c-border);border-radius:8px;padding:10px;text-align:center}
+.info-card .val{font-family:'Orbitron',monospace;font-size:0.95rem;color:var(--c-accent);font-weight:700}
+.info-card .lbl{font-size:0.65rem;color:var(--c-muted);letter-spacing:2px;margin-top:2px;font-family:'Rajdhani',sans-serif}
+.typing-dots{display:inline-flex;gap:4px;align-items:center;padding:4px 0}
+.typing-dots span{width:6px;height:6px;border-radius:50%;background:var(--c-muted);animation:blink 1.2s infinite}
+.typing-dots span:nth-child(2){animation-delay:.2s}
+.typing-dots span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:0.2}40%{opacity:1}}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="header">
+    <div class="logo">MAHMUT <span>AI</span></div>
+    <div class="subtitle">Türkçe Sesli Asistan</div>
+  </div>
+
+  <div class="status-bar">
+    <div class="dot"></div>
+    <div class="status-text" id="statusText">HAZIR</div>
+  </div>
+
+  <div class="chat-box" id="chatBox">
+    <div class="msg system">Mahmut AI aktif — Claude AI destekli</div>
+    <div class="msg mahmut">
+      <div class="label">MAHMUT <span class="ai-badge">AI</span></div>
+      Merhaba! Ben Mahmut AI. Artık gerçek yapay zeka ile güçlendirilmiş haldeyim! Saat, tarih, hava durumu gibi komutların yanı sıra her türlü sorunuzu da yanıtlayabilirim. Ne öğrenmek istersiniz?
+    </div>
+  </div>
+
+  <div class="quick-btns">
+    <button class="qbtn" onclick="processCommand('saat kaç')">🕐 Saat Kaç?</button>
+    <button class="qbtn" onclick="processCommand('bugün ne günü')">📅 Tarih</button>
+    <button class="qbtn" onclick="processCommand('hava durumu istanbul')">🌤 Hava Durumu</button>
+    <button class="qbtn" onclick="processCommand('youtube aç')">▶ YouTube Aç</button>
+    <button class="qbtn" onclick="processCommand('takvimi aç')">📆 Takvim Aç</button>
+    <button class="qbtn" onclick="processCommand('internet bağlantısı var mı')">📡 İnternet Kontrol</button>
+    <button class="qbtn" onclick="processCommand('bana bir şaka anlat')">😄 Şaka Anlat</button>
+    <button class="qbtn" onclick="processCommand('türkiye hakkında bilgi ver')">🇹🇷 Türkiye Bilgisi</button>
+  </div>
+
+  <div class="input-row">
+    <button class="btn-mic" id="micBtn" onclick="toggleMic()" title="Sesli komut">🎤</button>
+    <input class="text-input" id="userInput" placeholder="Komut yazın veya bir şey sorun..." onkeydown="if(event.key==='Enter')sendMsg()" />
+    <button class="btn-send" onclick="sendMsg()">➤</button>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="val" id="clockVal">--:--</div>
+      <div class="lbl">SAAT</div>
+    </div>
+    <div class="info-card">
+      <div class="val" id="dateVal">--</div>
+      <div class="lbl">TARİH</div>
+    </div>
+    <div class="info-card">
+      <div class="val" id="netVal">...</div>
+      <div class="lbl">İNTERNET</div>
+    </div>
+  </div>
+</div>
+
+<script>
+let isListening = false;
+let recognition = null;
+
+// Saat güncelle
+function updateClock(){
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('clockVal').textContent = h+':'+m;
+  document.getElementById('dateVal').textContent = now.getDate()+'/'+(now.getMonth()+1);
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// İnternet kontrolü
+function checkNet(){
+  const el = document.getElementById('netVal');
+  fetch('https://www.google.com/favicon.ico',{mode:'no-cors',cache:'no-store'})
+    .then(()=>{ el.textContent='✓'; el.style.color='var(--c-accent2)'; })
+    .catch(()=>{ el.textContent='✗'; el.style.color='#ff4466'; });
+}
+checkNet();
+
+// Mesaj ekle
+function addMsg(type, text, isThinking=false){
+  const box = document.getElementById('chatBox');
+  const div = document.createElement('div');
+  div.className = 'msg ' + type + (isThinking ? ' thinking' : '');
+  if(type === 'mahmut'){
+    div.innerHTML = '<div class="label">MAHMUT <span class="ai-badge">AI</span></div>' + text;
+  } else if(type === 'user'){
+    div.innerHTML = '<div class="label">SİZ</div>' + text;
+  } else {
+    div.textContent = text;
+  }
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+  return div;
+}
+
+// Yazıyor animasyonu
+function addTyping(){
+  const box = document.getElementById('chatBox');
+  const div = document.createElement('div');
+  div.className = 'msg mahmut thinking';
+  div.id = 'typingMsg';
+  div.innerHTML = '<div class="label">MAHMUT</div><div class="typing-dots"><span></span><span></span><span></span></div>';
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+function removeTyping(){
+  const el = document.getElementById('typingMsg');
+  if(el) el.remove();
+}
+
+// Sesli konuşma
+function speak(text){
+  if('speechSynthesis' in window){
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang = 'tr-TR';
+    utt.rate = 1.0;
+    const voices = window.speechSynthesis.getVoices();
+    const tr = voices.find(v => v.lang.startsWith('tr'));
+    if(tr) utt.voice = tr;
+    window.speechSynthesis.speak(utt);
+  }
+}
+
+function setStatus(t){ document.getElementById('statusText').textContent = t; }
+
+// Yerel komutlar kontrolü
+function localCommand(c, cmd){
+  if(c.includes('saat') || c.includes('kaç')){
+    const now = new Date();
+    const t = now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
+    return 'Şu an saat ' + t;
+  }
+  if(c.includes('tarih') || c.includes('bugün') && c.includes('gün')){
+    const now = new Date();
+    const days = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+    const months = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+    return 'Bugün '+days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
+  }
+  if(c.includes('hava')){
+    const city = c.includes('ankara')?'ankara':c.includes('izmir')?'izmir':c.includes('bursa')?'bursa':'istanbul';
+    window.open('https://www.google.com/search?q='+city+'+hava+durumu','_blank');
+    return city.charAt(0).toUpperCase()+city.slice(1)+' için hava durumu sayfasını açıyorum.';
+  }
+  if(c.includes('youtube') || c.includes('video')){
+    window.open('https://youtube.com','_blank');
+    return 'YouTube açılıyor.';
+  }
+  if(c.includes('takvim')){
+    window.open('https://calendar.google.com','_blank');
+    return 'Google Takvim açılıyor.';
+  }
+  if(c.includes('internet') || c.includes('bağlantı')){
+    checkNet();
+    return 'İnternet bağlantısı kontrol edildi. Sağ alttaki göstergeye bakabilirsiniz.';
+  }
+  if(c.includes('google') && c.includes('ara') || c.startsWith('ara ')){
+    const q = c.replace(/google|ara|bul|internette|arama/g,'').trim();
+    window.open('https://google.com/search?q='+encodeURIComponent(q||''),'_blank');
+    return (q?q+' için':'Google\'da ')+' arama yapıyorum.';
+  }
+  return null; // Yerel komut değil → AI'ya gönder
+}
+
+// Claude AI'ya sor
+async function askClaude(userMessage){
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: 'Sen Mahmut AI\'sın — Türkçe konuşan, samimi ve yardımsever bir sesli asistan. Kısa, net ve anlaşılır Türkçe cevaplar ver. Çok uzun cevaplar verme, 2-3 cümle genellikle yeterli. Eğer kullanıcı Türkçe dışında bir dil kullanırsa yine Türkçe cevap ver.',
+        messages: [{ role: 'user', content: userMessage }]
+      })
+    });
+    const data = await response.json();
+    if(data.content && data.content[0]){
+      return data.content[0].text;
+    }
+    return 'Bir sorun oluştu, tekrar dener misiniz?';
+  } catch(e) {
+    return 'Yapay zeka bağlantısı şu an mevcut değil. Saat, tarih ve diğer yerel komutlar çalışmaya devam ediyor.';
+  }
+}
+
+// Ana komut işleyici
+async function processCommand(cmd){
+  const c = cmd.toLowerCase().trim();
+  addMsg('user', cmd);
+  setStatus('İŞLENİYOR...');
+
+  // Önce yerel komutları dene
+  const localReply = localCommand(c, cmd);
+  if(localReply){
+    addMsg('mahmut', localReply);
+    speak(localReply);
+    setStatus('HAZIR');
+    return;
+  }
+
+  // Yerel komut değilse → Claude AI
+  setStatus('DÜŞÜNÜYOR...');
+  addTyping();
+
+  const aiReply = await askClaude(cmd);
+  removeTyping();
+  addMsg('mahmut', aiReply);
+  speak(aiReply);
+  setStatus('HAZIR');
+}
+
+function sendMsg(){
+  const inp = document.getElementById('userInput');
+  const val = inp.value.trim();
+  if(!val) return;
+  inp.value = '';
+  processCommand(val);
+}
+
+function toggleMic(){
+  if(!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)){
+    addMsg('system', 'Sesli komut için Chrome tarayıcısı kullanın.');
+    return;
+  }
+  if(isListening){ recognition.stop(); return; }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.lang = 'tr-TR';
+  recognition.interimResults = false;
+  recognition.onstart = () => {
+    isListening = true;
+    document.getElementById('micBtn').classList.add('listening');
+    setStatus('DİNLİYORUM...');
+  };
+  recognition.onresult = (e) => { processCommand(e.results[0][0].transcript); };
+  recognition.onend = () => {
+    isListening = false;
+    document.getElementById('micBtn').classList.remove('listening');
+    setStatus('HAZIR');
+  };
+  recognition.onerror = () => {
+    isListening = false;
+    document.getElementById('micBtn').classList.remove('listening');
+    setStatus('HAZIR');
+  };
+  recognition.start();
+}
+
+window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+</script>
+</body>
+</html>
